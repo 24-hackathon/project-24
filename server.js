@@ -28,6 +28,8 @@ app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 
+const API_BASE_URL = window.location.origin;
+
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/projectflow';
 mongoose.connect(MONGODB_URI, {
