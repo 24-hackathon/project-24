@@ -28,7 +28,9 @@ app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 
-const API_BASE_URL = window.location.origin;
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : 'https://project-24-alpha.vercel.app/';
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/projectflow';
