@@ -13,24 +13,19 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_here';
 
 // Middleware
 // Replace your current CORS middleware with this:
-// Replace the CORS configuration with:
 app.use(cors({
     origin: [
-        'https://project-24-alpha.vercel.app',
-        'https://projectdhaara.vercel.app',
-        'http://localhost:5000',
-        'http://localhost:5173'
+    'https://project-24-alpha.vercel.app/',
+      'https://projectdhaara.vercel.app',
+      'http://localhost:5000', // Keep for local development
+      'http://localhost:5173'  // Keep for local development
     ],
     credentials: true
-}));
+  }));
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
-
-const API_BASE_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:5000' 
-  : 'https://project-24-alpha.vercel.app/';
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/projectflow';
@@ -367,7 +362,7 @@ app.get('/chatbot', (req, res) => {
 });
 
 // User registration
-app.post(`${API_BASE_URL}/api/signup`, async (req, res) => {
+app.post('/api/signup', async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
@@ -411,7 +406,7 @@ app.post(`${API_BASE_URL}/api/signup`, async (req, res) => {
 });
 
 // User login
-app.post(`${API_BASE_URL}/api/login`, async (req, res) => {
+app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -447,7 +442,7 @@ app.post(`${API_BASE_URL}/api/login`, async (req, res) => {
         );
 
         // Redirect based on role
-        let redirectUrl = user.role === 'admin' ? '/admin-dashboard.html' : '/user-dashboard.html';
+        let redirectUrl = user.role === 'admin' ? '/admin-dashboard' : '/user-dashboard';
 
         res.json({
             message: 'Login successful',
@@ -467,7 +462,7 @@ app.post(`${API_BASE_URL}/api/login`, async (req, res) => {
 });
 
 // Forgot password (simplified version)
-app.post(`${API_BASE_URL}/api/forgot-password`, async (req, res) => {
+app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
         
@@ -492,7 +487,7 @@ app.post(`${API_BASE_URL}/api/forgot-password`, async (req, res) => {
 });
 
 // Get user profile (protected route)
-app.get(`${API_BASE_URL}/api/profile`, authenticateToken, async (req, res) => {
+app.get('/api/profile', authenticateToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.userId).select('-password');
         if (!user) {
@@ -507,7 +502,7 @@ app.get(`${API_BASE_URL}/api/profile`, authenticateToken, async (req, res) => {
 });
 
 // Get login history (protected route)
-app.get(`${API_BASE_URL}/api/login-history`, authenticateToken, async (req, res) => {
+app.get('/api/login-history', authenticateToken, async (req, res) => {
     try {
         const history = await LoginHistory.find({ userId: req.user.userId })
             .sort({ timestamp: -1 })
@@ -521,7 +516,7 @@ app.get(`${API_BASE_URL}/api/login-history`, authenticateToken, async (req, res)
 });
 
 // Get all users (admin only)
-app.get(`${API_BASE_URL}/api/users`, authenticateToken, requireAdmin, async (req, res) => {
+app.get('/api/users', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const users = await User.find().select('-password').sort({ createdAt: -1 });
         res.json({ users });
@@ -532,7 +527,7 @@ app.get(`${API_BASE_URL}/api/users`, authenticateToken, requireAdmin, async (req
 });
 
 // Project routes (admin only)
-app.get(`${API_BASE_URL}/api/projects`, authenticateToken, async (req, res) => {
+app.get('/api/projects', authenticateToken, async (req, res) => {
     try {
         const projects = await Project.find().populate('createdBy', 'name email');
         res.json({ projects });
@@ -542,7 +537,7 @@ app.get(`${API_BASE_URL}/api/projects`, authenticateToken, async (req, res) => {
     }
 });
 
-app.post(`${API_BASE_URL}/api/projects`, authenticateToken, requireAdmin, async (req, res) => {
+app.post('/api/projects', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { title, description, status, startDate, endDate } = req.body;
         
@@ -565,7 +560,7 @@ app.post(`${API_BASE_URL}/api/projects`, authenticateToken, requireAdmin, async 
     }
 });
 
-app.put(`${API_BASE_URL}/api/projects/:id`, authenticateToken, requireAdmin, async (req, res) => {
+app.put('/api/projects/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { title, description, status, startDate, endDate } = req.body;
         
@@ -586,7 +581,7 @@ app.put(`${API_BASE_URL}/api/projects/:id`, authenticateToken, requireAdmin, asy
     }
 });
 
-app.delete(`${API_BASE_URL}/api/projects/:id`, authenticateToken, requireAdmin, async (req, res) => {
+app.delete('/api/projects/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const project = await Project.findByIdAndDelete(req.params.id);
         
@@ -608,7 +603,7 @@ app.delete(`${API_BASE_URL}/api/projects/:id`, authenticateToken, requireAdmin, 
 });
 
 // Application routes
-app.get(`${API_BASE_URL}/api/applications`, authenticateToken, requireAdmin, async (req, res) => {
+app.get('/api/applications', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { status } = req.query;
         let filter = {};
@@ -630,7 +625,7 @@ app.get(`${API_BASE_URL}/api/applications`, authenticateToken, requireAdmin, asy
     }
 });
 
-app.put(`${API_BASE_URL}/api/applications/:id/review`, authenticateToken, requireAdmin, async (req, res) => {
+app.put('/api/applications/:id/review', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -659,7 +654,7 @@ app.put(`${API_BASE_URL}/api/applications/:id/review`, authenticateToken, requir
 });
 
 // Group routes
-app.get(`${API_BASE_URL}/api/groups`, authenticateToken, async (req, res) => {
+app.get('/api/groups', authenticateToken, async (req, res) => {
     try {
         const groups = await Group.find()
             .populate('projectId', 'title')
@@ -674,7 +669,7 @@ app.get(`${API_BASE_URL}/api/groups`, authenticateToken, async (req, res) => {
     }
 });
 
-app.post(`${API_BASE_URL}/api/groups/generate`, authenticateToken, requireAdmin, async (req, res) => {
+app.post('/api/groups/generate', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { projectId, groupSize } = req.body;
         
@@ -1296,3 +1291,4 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
+module.exports = app; 
