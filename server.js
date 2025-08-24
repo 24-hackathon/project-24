@@ -15,6 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_here';
 // Replace your current CORS middleware with this:
 app.use(cors({
     origin: [
+    'https://project-24-alpha.vercel.app/',
       'https://projectdhaara.vercel.app',
       'http://localhost:5000', // Keep for local development
       'http://localhost:5173'  // Keep for local development
