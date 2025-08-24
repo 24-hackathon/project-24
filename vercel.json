@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "api/index.js", "use": "@vercel/node" },
+      { "src": "*.html", "use": "@vercel/static" },
+      { "src": "public/**/*", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "/api/index.js" },
+      { "src": "/", "dest": "/index.html" },
+      { "src": "/login", "dest": "/login.html" },
+      { "src": "/chatbot", "dest": "/chatbot.html" },
+      { "src": "/admin-dashboard", "dest": "/admin-dashboard.html" },
+      { "src": "/user-dashboard", "dest": "/user-dashboard.html" }
+    ]
+  }
+  

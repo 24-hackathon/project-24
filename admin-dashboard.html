@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectFlow - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --accent: #7209b7;
+            --warning: #f72585;
+            --info: #4895ef;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding: 20px 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 0 20px 20px 0;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #6c757d;
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        /* Forms */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        /* Tabs */
+        .nav-tabs .nav-link {
+            border-radius: 8px 8px 0 0;
+            color: #6c757d;
+            padding: 12px 20px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-color: #dee2e6 #dee2e6 #fff;
+            font-weight: 600;
+        }
+        
+        /* Modal */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Dashboard Sections */
+        .dashboard-section {
+            display: none;
+        }
+        
+        .dashboard-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                text-align: center;
+            }
+            
+            .sidebar-header h3 {
+                display: none;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .nav-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                padding: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: block !important;
+            }
+            
+            .sidebar.show {
+                width: 250px;
+                padding: 20px 0;
+            }
+            
+            .sidebar.show .sidebar-header h3 {
+                display: block;
+            }
+            
+            .sidebar.show .nav-link span {
+                display: inline;
+            }
+            
+            .sidebar.show .nav-link i {
+                margin-right: 10px;
+            }
+        }
+        
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Project Cards */
+        .project-card {
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            border-left: 4px solid var(--secondary);
+        }
+        
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        
+        .leaderboard-item:first-child .leaderboard-rank {
+            background: gold;
+            color: white;
+        }
+        
+        .leaderboard-item:nth-child(2) .leaderboard-rank {
+            background: silver;
+            color: white;
+        }
+        
+        .leaderboard-item:nth-child(3) .leaderboard-rank {
+            background: #cd7f32;
+            color: white;
+        }
+        
+        .leaderboard-content {
+            flex: 1;
+        }
+        
+        .leaderboard-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .leaderboard-project {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .leaderboard-grade {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Group allocation */
+        .group-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .group-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .group-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .member-badge {
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .member-badge .role {
+            font-size: 0.8rem;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 5px;
+        }
+
+        /* Loading states */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button (Mobile) -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-project-diagram me-2"></i>ProjectFlow</h3>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="projects">
+                        <i class="fas fa-project-diagram"></i> <span>Projects</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="applications">
+                        <i class="fas fa-file-alt"></i> <span>Applications</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="allocation">
+                        <i class="fas fa-users"></i> <span>Group Allocation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="submissions">
+                        <i class="fas fa-tasks"></i> <span>Submissions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="grading">
+                        <i class="fas fa-star"></i> <span>Grading</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="leaderboard">
+                        <i class="fas fa-trophy"></i> <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">Admin Dashboard</div>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">A</div>
+                <div>
+                    <div id="user-name">Admin User</div>
+                    <small class="text-muted">Administrator</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section active" id="dashboard-section">
+            <!-- Stats -->
+            <div class="stats-container" id="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary);">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-projects">0</div>
+                        <div class="stat-title">Active Projects</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--success);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-users">0</div>
+                        <div class="stat-title">Registered Users</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(247, 37, 133, 0.1); color: var(--warning);">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-applications">0</div>
+                        <div class="stat-title">Pending Applications</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(114, 9, 183, 0.1); color: var(--accent);">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-submissions">0</div>
+                        <div class="stat-title">Submissions to Review</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-history me-2"></i> Recent Activity
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Activity</th>
+                                    <th>Project</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-activity-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="dashboard-section" id="projects-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Project Management</h4>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                    <i class="fas fa-plus me-2"></i> Create Project
+                </button>
+            </div>
+
+            <div class="row" id="projects-container">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Applications Section -->
+        <div class="dashboard-section" id="applications-section">
+            <h4 class="mb-4">Project Applications</h4>
+            
+            <ul class="nav nav-tabs" id="applicationsTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">Pending</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab">Approved</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab">Rejected</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content mt-3">
+                <div class="tab-pane fade show active" id="pending" role="tabpanel">
+                    <div class="table-container">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Project</th>
+                                    <th>Applied On</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-applications-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="approved" role="tabpanel">
+                    <div class="table-container">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Project</th>
+                                    <th>Approved On</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="approved-applications-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="rejected" role="tabpanel">
+                    <div class="table-container">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Project</th>
+                                    <th>Rejected On</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rejected-applications-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group Allocation Section -->
+        <div class="dashboard-section" id="allocation-section">
+            <h4 class="mb-4">Group Allocation</h4>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-users me-2"></i> Create Groups
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Select Project</label>
+                                <select class="form-select" id="group-project-select">
+                                    <option value="">Select a project</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Group Size</label>
+                                <select class="form-select" id="group-size-select">
+                                    <option value="3">3 members</option>
+                                    <option value="4" selected>4 members</option>
+                                    <option value="5">5 members</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="generate-groups-btn">
+                        <i class="fas fa-magic me-2"></i> Generate Groups
+                    </button>
+                </div>
+            </div>
+            
+            <h5 class="mb-3">Current Groups</h5>
+            <div id="groups-container">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Submissions Section -->
+        <div class="dashboard-section" id="submissions-section">
+            <h4 class="mb-4">Project Submissions</h4>
+            
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Group</th>
+                            <th>Project</th>
+                            <th>Submitted On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissions-body">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Grading Section -->
+        <div class="dashboard-section" id="grading-section">
+            <h4 class="mb-4">Project Grading</h4>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-star me-2"></i> Grade Submission
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Select Group</label>
+                            <select class="form-select" id="grade-group-select">
+                                <option value="">Select a group</option>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Project</label>
+                            <input type="text" class="form-control" id="grade-project-input" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Grade (0-100)</label>
+                        <input type="number" class="form-control" id="grade-input" min="0" max="100" value="0">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Feedback</label>
+                        <textarea class="form-control" id="grade-feedback" rows="4" placeholder="Enter your feedback here..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="submit-grade-btn">Submit Grade</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="dashboard-section" id="leaderboard-section">
+            <h4 class="mb-4">Project Leaderboard</h4>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-trophy me-2"></i> Top Projects
+                </div>
+                <div class="card-body" id="leaderboard-body">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="project-name" placeholder="Enter project name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="project-description" rows="3" placeholder="Enter project description"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="project-start-date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="project-end-date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="project-status">
+                            <option value="active" selected>Active</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="create-project-btn">Create Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Submission Review Modal -->
+        <div class="modal fade" id="submissionReviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Review Submission</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Group Name</label>
+                            <p id="review-group-name" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Project</label>
+                            <p id="review-project-name" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Submitted On</label>
+                            <p id="review-submitted-date" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Google Drive Link</label>
+                            <div>
+                                <a id="review-drive-link" href="#" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-external-link-alt me-1"></i> Open in Google Drive
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Additional Notes</label>
+                            <p id="review-notes" class="form-control-static text-muted">No additional notes provided.</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Submission Status</label>
+                            <p id="review-status"><span class="badge bg-success">Submitted</span></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="start-grading-btn">Start Grading</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = JSON.parse(localStorage.getItem('user'));
+
+        // Check if user is authenticated and is an admin
+        if (!authToken || !currentUser || currentUser.role !== 'admin') {
+            window.location.href = '/login';
+        }
+
+        // Set user info in header
+        document.getElementById('user-name').textContent = currentUser.name;
+        document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+
+        // API Request Helper
+        async function apiRequest(url, options = {}) {
+            if (!options.headers) {
+                options.headers = {};
+            }
+            options.headers['Authorization'] = `Bearer ${authToken}`;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, options);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Request failed');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API request error:', error);
+                alert(error.message || 'An error occurred');
+                throw error;
+            }
+        }
+
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const stats = await apiRequest('/admin/stats');
+                
+                document.getElementById('stat-projects').textContent = stats.activeProjects;
+                document.getElementById('stat-users').textContent = stats.totalUsers;
+                document.getElementById('stat-applications').textContent = stats.pendingApplications;
+                document.getElementById('stat-submissions').textContent = stats.submissionsToReview;
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load Recent Activity
+        async function loadRecentActivity() {
+            try {
+                // This would typically come from a dedicated activity endpoint
+                // For now, we'll simulate with recent applications and submissions
+                const [applications, submissions] = await Promise.all([
+                    apiRequest('/applications?status=pending'),
+                    apiRequest('/submissions')
+                ]);
+                
+                const activityBody = document.getElementById('recent-activity-body');
+                activityBody.innerHTML = '';
+                
+                // Add recent applications as activity
+                applications.applications.slice(0, 3).forEach(app => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.userId.name}</td>
+                        <td>Applied for project</td>
+                        <td>${app.projectId.title}</td>
+                        <td>${new Date(app.appliedAt).toLocaleDateString()}</td>
+                    `;
+                    activityBody.appendChild(row);
+                });
+                
+                // Add recent submissions as activity
+                submissions.submissions.slice(0, 2).forEach(sub => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sub.groupId.name}</td>
+                        <td>Submitted project</td>
+                        <td>${sub.projectId.title}</td>
+                        <td>${new Date(sub.submittedAt).toLocaleDateString()}</td>
+                    `;
+                    activityBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Load Projects
+        async function loadProjects() {
+            try {
+                const data = await apiRequest('/projects');
+                const projectsContainer = document.getElementById('projects-container');
+                projectsContainer.innerHTML = '';
+                
+                data.projects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'col-md-4 mb-4';
+                    projectCard.innerHTML = `
+                        <div class="card project-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title">${project.title}</h5>
+                                    <span class="badge bg-${project.status === 'active' ? 'success' : project.status === 'upcoming' ? 'warning' : 'secondary'}">${project.status}</span>
+                                </div>
+                                <p class="card-text">${project.description}</p>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">Start: ${new Date(project.startDate).toLocaleDateString()}</small>
+                                    <small class="text-muted">End: ${new Date(project.endDate).toLocaleDateString()}</small>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-between">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editProject('${project._id}')">Edit</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteProject('${project._id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(projectCard);
+                });
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        // Create Project
+        document.getElementById('create-project-btn').addEventListener('click', async function() {
+            const name = document.getElementById('project-name').value;
+            const description = document.getElementById('project-description').value;
+            const startDate = document.getElementById('project-start-date').value;
+            const endDate = document.getElementById('project-end-date').value;
+            const status = document.getElementById('project-status').value;
+            
+            if (!name || !description || !startDate || !endDate) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            try {
+                this.classList.add('btn-loading');
+                this.disabled = true;
+                
+                await apiRequest('/projects', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: name,
+                        description,
+                        startDate,
+                        endDate,
+                        status
+                    })
+                });
+                
+                // Close modal and reload projects
+                bootstrap.Modal.getInstance(document.getElementById('createProjectModal')).hide();
+                loadProjects();
+                loadDashboardStats();
+                
+                // Reset form
+                document.getElementById('project-name').value = '';
+                document.getElementById('project-description').value = '';
+                document.getElementById('project-start-date').value = '';
+                document.getElementById('project-end-date').value = '';
+                document.getElementById('project-status').value = 'active';
+            } catch (error) {
+                console.error('Error creating project:', error);
+            } finally {
+                this.classList.remove('btn-loading');
+                this.disabled = false;
+            }
+        });
+
+        // Edit Project (placeholder)
+        function editProject(projectId) {
+            alert('Edit project functionality would open a modal to edit project ' + projectId);
+        }
+
+        // Delete Project
+        async function deleteProject(projectId) {
+            if (!confirm('Are you sure you want to delete this project? This will also delete all related applications, groups, and submissions.')) {
+                return;
+            }
+            
+            try {
+                await apiRequest(`/projects/${projectId}`, {
+                    method: 'DELETE'
+                });
+                
+                loadProjects();
+                loadDashboardStats();
+                alert('Project deleted successfully');
+            } catch (error) {
+                console.error('Error deleting project:', error);
+            }
+        }
+
+        // Load Applications
+        async function loadApplications() {
+            try {
+                const [pending, approved, rejected] = await Promise.all([
+                    apiRequest('/applications?status=pending'),
+                    apiRequest('/applications?status=approved'),
+                    apiRequest('/applications?status=rejected')
+                ]);
+                
+                // Populate pending applications
+                const pendingBody = document.getElementById('pending-applications-body');
+                pendingBody.innerHTML = '';
+                
+                pending.applications.forEach(app => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.userId.name} (${app.userId.email})</td>
+                        <td>${app.projectId.title}</td>
+                        <td>${new Date(app.appliedAt).toLocaleDateString()}</td>
+                        <td><span class="badge bg-warning text-dark">Pending</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="reviewApplication('${app._id}', 'approved')">Approve</button>
+                            <button class="btn btn-sm btn-danger" onclick="reviewApplication('${app._id}', 'rejected')">Reject</button>
+                        </td>
+                    `;
+                    pendingBody.appendChild(row);
+                });
+                
+                // Populate approved applications
+                const approvedBody = document.getElementById('approved-applications-body');
+                approvedBody.innerHTML = '';
+                
+                approved.applications.forEach(app => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.userId.name} (${app.userId.email})</td>
+                        <td>${app.projectId.title}</td>
+                        <td>${new Date(app.reviewedAt).toLocaleDateString()}</td>
+                        <td><span class="badge bg-success">Approved</span></td>
+                    `;
+                    approvedBody.appendChild(row);
+                });
+                
+                // Populate rejected applications
+                const rejectedBody = document.getElementById('rejected-applications-body');
+                rejectedBody.innerHTML = '';
+                
+                rejected.applications.forEach(app => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.userId.name} (${app.userId.email})</td>
+                        <td>${app.projectId.title}</td>
+                        <td>${new Date(app.reviewedAt).toLocaleDateString()}</td>
+                        <td><span class="badge bg-danger">Rejected</span></td>
+                    `;
+                    rejectedBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+
+        // Review Application
+        async function reviewApplication(applicationId, status) {
+            try {
+                await apiRequest(`/applications/${applicationId}/review`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                loadApplications();
+                loadDashboardStats();
+                alert(`Application ${status} successfully`);
+            } catch (error) {
+                console.error('Error reviewing application:', error);
+            }
+        }
+
+        // Load Groups and Projects for Group Generation
+        async function loadGroupData() {
+            try {
+                const [projects, groups] = await Promise.all([
+                    apiRequest('/projects'),
+                    apiRequest('/groups')
+                ]);
+                
+                // Populate project select
+                const projectSelect = document.getElementById('group-project-select');
+                projectSelect.innerHTML = '<option value="">Select a project</option>';
+                
+                projects.projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.title;
+                    projectSelect.appendChild(option);
+                });
+                
+                // Populate groups
+                const groupsContainer = document.getElementById('groups-container');
+                groupsContainer.innerHTML = '';
+                
+                groups.groups.forEach(group => {
+                    const groupCard = document.createElement('div');
+                    groupCard.className = 'group-card';
+                    
+                    let membersHtml = '';
+                    group.members.forEach(member => {
+                        membersHtml += `
+                            <div class="member-badge">
+                                ${member.userId.name} <span class="role">${member.role}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    groupCard.innerHTML = `
+                        <div class="group-header">
+                            <div class="group-name">${group.name}</div>
+                            <div class="text-muted">Project: ${group.projectId.title}</div>
+                        </div>
+                        <div class="group-members">
+                            ${membersHtml}
+                        </div>
+                    `;
+                    
+                    groupsContainer.appendChild(groupCard);
+                });
+            } catch (error) {
+                console.error('Error loading group data:', error);
+            }
+        }
+
+        // Generate Groups
+        document.getElementById('generate-groups-btn').addEventListener('click', async function() {
+            const projectId = document.getElementById('group-project-select').value;
+            const groupSize = document.getElementById('group-size-select').value;
+            
+            if (!projectId) {
+                alert('Please select a project');
+                return;
+            }
+            
+            try {
+                this.classList.add('btn-loading');
+                this.disabled = true;
+                
+                await apiRequest('/groups/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ projectId, groupSize })
+                });
+                
+                loadGroupData();
+                alert('Groups generated successfully');
+            } catch (error) {
+                console.error('Error generating groups:', error);
+            } finally {
+                this.classList.remove('btn-loading');
+                this.disabled = false;
+            }
+        });
+
+        // Load Submissions
+        // Load Submissions
+async function loadSubmissions() {
+    try {
+        const data = await apiRequest('/submissions');
+        const submissionsBody = document.getElementById('submissions-body');
+        submissionsBody.innerHTML = '';
+        
+        if (data.submissions.length === 0) {
+            submissionsBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No submissions found</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        data.submissions.forEach(sub => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${sub.groupId.name}</td>
+                <td>${sub.projectId.title}</td>
+                <td>${new Date(sub.submittedAt).toLocaleDateString()}</td>
+                <td><span class="badge bg-${sub.status === 'submitted' ? 'success' : sub.status === 'graded' ? 'info' : 'warning'}">${sub.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="reviewSubmission('${sub._id}')">Review</button>
+                </td>
+            `;
+            submissionsBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading submissions:', error);
+    }
+}
+        // Load Grading Data
+        // Load Grading Data
+async function loadGradingData() {
+    try {
+        const [groups, grades] = await Promise.all([
+            apiRequest('/groups'),
+            apiRequest('/grades')
+        ]);
+        
+        // Populate group select
+        const groupSelect = document.getElementById('grade-group-select');
+        groupSelect.innerHTML = '<option value="">Select a group</option>';
+        
+        groups.groups.forEach(group => {
+            const option = document.createElement('option');
+            option.value = group._id;
+            option.textContent = group.name;
+            option.dataset.project = group.projectId.title;
+            option.dataset.projectId = group.projectId._id; // Store project ID
+            groupSelect.appendChild(option);
+        });
+        
+        // Update project input when group is selected
+        groupSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('grade-project-input').value = selectedOption.dataset.project || '';
+            
+            // Also store the project ID for later use
+            if (selectedOption.dataset.projectId) {
+                window.currentProjectId = selectedOption.dataset.projectId;
+            }
+        });
+    } catch (error) {
+        console.error('Error loading grading data:', error);
+    }
+}
+
+        // Submit Grade
+        // Submit Grade
+document.getElementById('submit-grade-btn').addEventListener('click', async function() {
+    const groupId = document.getElementById('grade-group-select').value;
+    const grade = document.getElementById('grade-input').value;
+    const feedback = document.getElementById('grade-feedback').value;
+    const projectName = document.getElementById('grade-project-input').value;
+    
+    if (!groupId || !grade || !feedback) {
+        alert('Please fill all fields');
+        return;
+    }
+    
+    try {
+        this.classList.add('btn-loading');
+        this.disabled = true;
+        
+        // Use the stored submission ID if available, otherwise we'll need to find it
+        let submissionId = window.currentSubmissionId;
+        
+        // If we don't have a submission ID, try to find it
+        if (!submissionId) {
+            const submissions = await apiRequest('/submissions');
+            const submission = submissions.submissions.find(sub => 
+                sub.groupId._id === groupId && sub.projectId._id === window.currentProjectId
+            );
+            
+            if (submission) {
+                submissionId = submission._id;
+            } else {
+                throw new Error('Could not find submission for this group and project');
+            }
+        }
+        
+        await apiRequest('/grades', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                submissionId,
+                groupId,
+                projectId: window.currentProjectId,
+                grade: parseInt(grade),
+                feedback
+            })
+        });
+        
+        // Reset form
+        document.getElementById('grade-group-select').value = '';
+        document.getElementById('grade-project-input').value = '';
+        document.getElementById('grade-input').value = '0';
+        document.getElementById('grade-feedback').value = '';
+        
+        // Clear stored IDs
+        window.currentSubmissionId = null;
+        window.currentGroupId = null;
+        window.currentProjectId = null;
+        
+        // Reload submissions to update status
+        loadSubmissions();
+        
+        alert('Grade submitted successfully');
+    } catch (error) {
+        console.error('Error submitting grade:', error);
+        alert('Error submitting grade: ' + error.message);
+    } finally {
+        this.classList.remove('btn-loading');
+        this.disabled = false;
+    }
+});
+
+        // Load Leaderboard
+        async function loadLeaderboard() {
+            try {
+                const data = await apiRequest('/leaderboard');
+                const leaderboardBody = document.getElementById('leaderboard-body');
+                leaderboardBody.innerHTML = '';
+                
+                data.leaderboard.slice(0, 10).forEach((grade, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'leaderboard-item';
+                    item.innerHTML = `
+                        <div class="leaderboard-rank">${index + 1}</div>
+                        <div class="leaderboard-content">
+                            <div class="leaderboard-name">${grade.groupId.name}</div>
+                            <div class="leaderboard-project">${grade.projectId.title}</div>
+                        </div>
+                        <div class="leaderboard-grade">${grade.grade}%</div>
+                    `;
+                    leaderboardBody.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
+
+        // Section Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show the selected section
+                const sectionId = this.getAttribute('data-section') + '-section';
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Load data for the selected section
+                switch(this.getAttribute('data-section')) {
+                    case 'dashboard':
+                        loadDashboardStats();
+                        loadRecentActivity();
+                        break;
+                    case 'projects':
+                        loadProjects();
+                        break;
+                    case 'applications':
+                        loadApplications();
+                        break;
+                    case 'allocation':
+                        loadGroupData();
+                        break;
+                    case 'submissions':
+                        loadSubmissions();
+                        break;
+                    case 'grading':
+                        loadGradingData();
+                        break;
+                    case 'leaderboard':
+                        loadLeaderboard();
+                        break;
+                }
+            });
+        });
+
+        // Toggle sidebar on mobile
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadRecentActivity();
+        });
+
+
+
+        // Review Submission
+async function reviewSubmission(submissionId) {
+    try {
+        const submission = await apiRequest(`/submissions/${submissionId}`);
+        
+        // Populate modal with submission data
+        document.getElementById('review-group-name').textContent = submission.groupId.name;
+        document.getElementById('review-project-name').textContent = submission.projectId.title;
+        document.getElementById('review-submitted-date').textContent = new Date(submission.submittedAt).toLocaleDateString();
+        
+        // Get the Google Drive link from files array
+        const driveFile = submission.files.find(file => file.filename === 'drive-link');
+        if (driveFile) {
+            const driveLink = document.getElementById('review-drive-link');
+            driveLink.href = driveFile.path;
+            driveLink.textContent = driveFile.path;
+        } else {
+            document.getElementById('review-drive-link').parentElement.innerHTML = '<p class="text-danger">No Google Drive link found</p>';
+        }
+        
+        // Display notes if available
+        if (submission.description && submission.description.trim() !== '') {
+            document.getElementById('review-notes').textContent = submission.description;
+        } else {
+            document.getElementById('review-notes').textContent = 'No additional notes provided.';
+        }
+        
+        // Update status badge
+        const statusBadge = document.getElementById('review-status');
+        statusBadge.innerHTML = `<span class="badge bg-${submission.status === 'submitted' ? 'success' : submission.status === 'graded' ? 'info' : 'warning'}">${submission.status}</span>`;
+        
+        // Set up the Start Grading button
+        document.getElementById('start-grading-btn').onclick = function() {
+            // Store the current submission ID for grading
+            window.currentSubmissionId = submissionId;
+            window.currentGroupId = submission.groupId._id;
+            window.currentProjectId = submission.projectId._id;
+            
+            // Switch to grading tab
+            document.querySelector('[data-section="grading"]').click();
+            
+            // Pre-fill the grading form
+            document.getElementById('grade-group-select').value = submission.groupId._id;
+            document.getElementById('grade-project-input').value = submission.projectId.title;
+            
+            // Close the modal
+            bootstrap.Modal.getInstance(document.getElementById('submissionReviewModal')).hide();
+        };
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('submissionReviewModal'));
+        modal.show();
+        
+    } catch (error) {
+        console.error('Error loading submission details:', error);
+        alert('Error loading submission details: ' + error.message);
+    }
+}
+
+
+
+        
+    </script>
+</body>
+</html>

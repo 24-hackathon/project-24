@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectFlow - User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --accent: #7209b7;
+            --warning: #f72585;
+            --info: #4895ef;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding: 20px 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 0 20px 20px 0;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #6c757d;
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        /* Forms */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        /* Dashboard Sections */
+        .dashboard-section {
+            display: none;
+        }
+        
+        .dashboard-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                text-align: center;
+            }
+            
+            .sidebar-header h3 {
+                display: none;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .nav-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                padding: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: block !important;
+            }
+            
+            .sidebar.show {
+                width: 250px;
+                padding: 20px 0;
+            }
+            
+            .sidebar.show .sidebar-header h3 {
+                display: block;
+            }
+            
+            .sidebar.show .nav-link span {
+                display: inline;
+            }
+            
+            .sidebar.show .nav-link i {
+                margin-right: 10px;
+            }
+        }
+        
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Project Cards */
+        .project-card {
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            border-left: 4px solid var(--secondary);
+        }
+        
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        
+        .leaderboard-item:first-child .leaderboard-rank {
+            background: gold;
+            color: white;
+        }
+        
+        .leaderboard-item:nth-child(2) .leaderboard-rank {
+            background: silver;
+            color: white;
+        }
+        
+        .leaderboard-item:nth-child(3) .leaderboard-rank {
+            background: #cd7f32;
+            color: white;
+        }
+        
+        .leaderboard-content {
+            flex: 1;
+        }
+        
+        .leaderboard-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .leaderboard-project {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .leaderboard-grade {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Group allocation */
+        .group-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .group-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Chatbot Icon */
+.chatbot-icon {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    animation: float 3s ease-in-out infinite;
+}
+
+.chatbot-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Pulsing animation for attention */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(67, 97, 238, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+    }
+}
+
+/* Floating animation */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Notification badge for chatbot */
+.chatbot-notification {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--warning);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chatbot-icon {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .chatbot-notification {
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
+    }
+}
+        
+        .group-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .member-badge {
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .member-badge .role {
+            font-size: 0.8rem;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 5px;
+        }
+
+        /* Notifications */
+        .notification-item {
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .notification-item.unread {
+            border-left-color: var(--info);
+            background: #f0f8ff;
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Application Form */
+        .application-form {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Loading states */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button (Mobile) -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-project-diagram me-2"></i>ProjectFlow</h3>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="projects">
+                        <i class="fas fa-project-diagram"></i> <span>Browse Projects</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="applications">
+                        <i class="fas fa-file-alt"></i> <span>My Applications</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="notifications">
+                        <i class="fas fa-bell"></i> <span>Notifications</span>
+                        <span class="badge bg-danger ms-2" id="notification-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="group">
+                        <i class="fas fa-users"></i> <span>My Group</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="submission">
+                        <i class="fas fa-tasks"></i> <span>Project Submission</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="leaderboard">
+                        <i class="fas fa-trophy"></i> <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">User Dashboard</div>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div>
+                    <div id="user-name">User Name</div>
+                    <small class="text-muted">Student</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section active" id="dashboard-section">
+            <!-- Stats -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary);">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-applied">0</div>
+                        <div class="stat-title">Applied Projects</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--success);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-approved">0</div>
+                        <div class="stat-title">Approved Applications</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(247, 37, 133, 0.1); color: var(--warning);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-group">0</div>
+                        <div class="stat-title">Group Members</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(114, 9, 183, 0.1); color: var(--accent);">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="stat-submitted">0</div>
+                        <div class="stat-title">Projects Submitted</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-history me-2"></i> Recent Activity
+                </div>
+                <div class="card-body">
+                    <div id="recent-activity">
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="dashboard-section" id="projects-section">
+            <h4 class="mb-4">Browse Projects</h4>
+            
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label">Sort By</label>
+                            <select class="form-select" id="sort-filter">
+                                <option value="latest">Latest First</option>
+                                <option value="last-week">Last Week</option>
+                                <option value="old">Oldest First</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="status-filter">
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-control" id="search-filter" placeholder="Search projects...">
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" id="apply-filters">Apply</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects List -->
+            <div class="row" id="projects-container">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Applications Section -->
+        <div class="dashboard-section" id="applications-section">
+            <h4 class="mb-4">My Applications</h4>
+            
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applications-body">
+                        <!-- Applications will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="dashboard-section" id="notifications-section">
+            <h4 class="mb-4">Notifications</h4>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Your Alerts</h5>
+                <button class="btn btn-sm btn-outline-primary" id="mark-all-read">
+                    <i class="fas fa-check-double me-1"></i> Mark all as read
+                </button>
+            </div>
+            
+            <div id="notifications-container">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Group Section -->
+        <div class="dashboard-section" id="group-section">
+            <h4 class="mb-4">My Group</h4>
+            
+            <div id="group-container">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> You are not currently part of any group. Once you're approved for a project, you'll be assigned to a group.
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission Section -->
+        <div class="dashboard-section" id="submission-section">
+            <h4 class="mb-4">Project Submission</h4>
+            
+            <div id="submission-container">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> You need to be part of an approved project to submit work.
+                </div>
+                
+                <div class="application-form" style="display: none;" id="submission-form">
+                    <h5 class="mb-3">Submit Project Work</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="submission-project" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Group Name</label>
+                        <input type="text" class="form-control" id="submission-group" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Google Drive Link</label>
+                        <input type="url" class="form-control" id="submission-link" placeholder="https://drive.google.com/..." required>
+                        <div class="form-text">Please make sure the link is accessible to anyone with the link</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="submission-notes" rows="3" placeholder="Any additional information about your submission..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="submit-project-btn">Submit Project</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="dashboard-section" id="leaderboard-section">
+            <h4 class="mb-4">Project Leaderboard</h4>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-trophy me-2"></i> Top Projects
+                </div>
+                <div class="card-body" id="leaderboard-body">
+                    <!-- Leaderboard will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div class="modal fade" id="applicationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Project</label>
+                        <input type="text" class="form-control" id="application-project" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Your Skills</label>
+                        <textarea class="form-control" id="application-skills" rows="2" placeholder="List your relevant skills (e.g., JavaScript, Python, UI/Design, etc.)" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Qualifications</label>
+                        <textarea class="form-control" id="application-qualifications" rows="2" placeholder="Your educational background and certifications" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Project Ideas</label>
+                        <textarea class="form-control" id="application-ideas" rows="3" placeholder="Your ideas or approach for this project" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Previous Experience</label>
+                        <textarea class="form-control" id="application-experience" rows="2" placeholder="Any relevant previous project experience"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submit-application-btn">Submit Application</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Application Details Modal -->
+<div class="modal fade" id="applicationDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Application Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="application-details-body">
+                <!-- Application details will be loaded here -->
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Floating Chatbot Icon -->
+<div class="chatbot-icon" id="chatbotIcon">
+    <a href="/chatbot"><i class="fas fa-comment-dots"></i></a>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = JSON.parse(localStorage.getItem('user'));
+        let currentProjectId = null;
+    
+        // Check if user is authenticated
+        if (!authToken || !currentUser) {
+            window.location.href = 'login.html';
+        }
+    
+        // Set user info in header
+        document.getElementById('user-name').textContent = currentUser.name;
+        document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    
+        // API Request Helper
+        async function apiRequest(url, options = {}) {
+            if (!options.headers) {
+                options.headers = {};
+            }
+            options.headers['Authorization'] = `Bearer ${authToken}`;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, options);
+                
+                // Handle unauthorized (token expired)
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('user');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Request failed');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API request error:', error);
+                alert(error.message || 'An error occurred');
+                throw error;
+            }
+        }
+    
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const stats = await apiRequest('/user/stats');
+                
+                // Update stats
+                document.getElementById('stat-applied').textContent = stats.applied;
+                document.getElementById('stat-approved').textContent = stats.approved;
+                document.getElementById('stat-group').textContent = stats.groupMembers;
+                document.getElementById('stat-submitted').textContent = stats.submitted;
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+    
+        // Load Recent Activity
+        async function loadRecentActivity() {
+            try {
+                const activityContainer = document.getElementById('recent-activity');
+                
+                // Get user applications for activity
+                const applications = await apiRequest('/user/applications');
+                
+                if (applications.applications.length === 0) {
+                    activityContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No recent activity</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let activityHTML = '';
+                applications.applications.slice(0, 5).forEach(app => {
+                    const date = new Date(app.appliedAt).toLocaleDateString();
+                    let icon = 'fa-file-alt';
+                    let color = 'text-info';
+                    
+                    if (app.status === 'approved') {
+                        icon = 'fa-check-circle';
+                        color = 'text-success';
+                    } else if (app.status === 'rejected') {
+                        icon = 'fa-times-circle';
+                        color = 'text-danger';
+                    }
+                    
+                    activityHTML += `
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="${color} me-3">
+                                <i class="fas ${icon} fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">${app.projectId.title}</div>
+                                <div class="text-muted small">Application ${app.status} • ${date}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                activityContainer.innerHTML = activityHTML;
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+    
+        // Load Projects with Filtering
+        async function loadProjects() {
+            try {
+                const sortBy = document.getElementById('sort-filter').value;
+                const statusFilter = document.getElementById('status-filter').value;
+                const searchText = document.getElementById('search-filter').value.toLowerCase();
+                
+                const data = await apiRequest('/projects');
+                const projectsContainer = document.getElementById('projects-container');
+                projectsContainer.innerHTML = '';
+                
+                // Filter and sort projects
+                let projects = data.projects;
+                
+                // Apply status filter
+                if (statusFilter !== 'all') {
+                    projects = projects.filter(project => project.status === statusFilter);
+                }
+                
+                // Apply search filter
+                if (searchText) {
+                    projects = projects.filter(project => 
+                        project.title.toLowerCase().includes(searchText) || 
+                        project.description.toLowerCase().includes(searchText)
+                    );
+                }
+                
+                // Apply sorting
+                if (sortBy === 'latest') {
+                    projects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                } else if (sortBy === 'old') {
+                    projects.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                } else if (sortBy === 'last-week') {
+                    const oneWeekAgo = new Date();
+                    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                    projects = projects.filter(project => new Date(project.createdAt) >= oneWeekAgo);
+                    projects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                }
+                
+                if (projects.length === 0) {
+                    projectsContainer.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No projects found</h5>
+                            <p class="text-muted">Try adjusting your filters</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Display projects
+                projects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'col-md-6 col-lg-4 mb-4';
+                    
+                    // Format dates
+                    const startDate = new Date(project.startDate).toLocaleDateString();
+                    const endDate = new Date(project.endDate).toLocaleDateString();
+                    
+                    projectCard.innerHTML = `
+                        <div class="card project-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title">${project.title}</h5>
+                                    <span class="badge bg-${project.status === 'active' ? 'success' : project.status === 'upcoming' ? 'warning' : 'secondary'}">${project.status}</span>
+                                </div>
+                                <p class="card-text">${project.description.substring(0, 100)}${project.description.length > 100 ? '...' : ''}</p>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small class="text-muted">Start: ${startDate}</small>
+                                    <small class="text-muted">End: ${endDate}</small>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <button class="btn btn-primary w-100" onclick="openApplicationModal('${project._id}', '${project.title.replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-paper-plane me-2"></i> Apply Now
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(projectCard);
+                });
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+    
+        // Open Application Modal
+        function openApplicationModal(projectId, projectTitle) {
+            currentProjectId = projectId;
+            document.getElementById('application-project').value = projectTitle;
+            
+            const modal = new bootstrap.Modal(document.getElementById('applicationModal'));
+            modal.show();
+        }
+    
+        // Submit Application
+        document.getElementById('submit-application-btn').addEventListener('click', async function() {
+            const skills = document.getElementById('application-skills').value;
+            const qualifications = document.getElementById('application-qualifications').value;
+            const ideas = document.getElementById('application-ideas').value;
+            const experience = document.getElementById('application-experience').value;
+            
+            if (!skills || !qualifications || !ideas) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            try {
+                this.classList.add('btn-loading');
+                this.disabled = true;
+                
+                await apiRequest('/applications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        projectId: currentProjectId,
+                        message: `Skills: ${skills}\nQualifications: ${qualifications}\nIdeas: ${ideas}\nExperience: ${experience}`
+                    })
+                });
+                
+                // Close modal and reload data
+                bootstrap.Modal.getInstance(document.getElementById('applicationModal')).hide();
+                loadDashboardStats();
+                loadRecentActivity();
+                loadApplications();
+                
+                // Reset form
+                document.getElementById('application-skills').value = '';
+                document.getElementById('application-qualifications').value = '';
+                document.getElementById('application-ideas').value = '';
+                document.getElementById('application-experience').value = '';
+                
+                alert('Application submitted successfully!');
+            } 
+            catch (error) {
+                console.error('Error submitting application:', error);
+                alert(error.message || 'An error occurred');
+            }
+            finally {
+                this.classList.remove('btn-loading');
+                this.disabled = false;
+            }
+        });
+    
+        // Load Applications
+        async function loadApplications() {
+            try {
+                const data = await apiRequest('/user/applications');
+                const applicationsBody = document.getElementById('applications-body');
+                applicationsBody.innerHTML = '';
+                
+                if (data.applications.length === 0) {
+                    applicationsBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No applications found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                data.applications.forEach(app => {
+                    const date = new Date(app.appliedAt).toLocaleDateString();
+                    let statusClass = '';
+                    
+                    switch(app.status) {
+                        case 'approved':
+                            statusClass = 'bg-success';
+                            break;
+                        case 'rejected':
+                            statusClass = 'bg-danger';
+                            break;
+                        case 'pending':
+                            statusClass = 'bg-warning';
+                            break;
+                        default:
+                            statusClass = 'bg-secondary';
+                    }
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.projectId.title}</td>
+                        <td>${date}</td>
+                        <td><span class="badge ${statusClass}">${app.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewApplication('${app._id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                    applicationsBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+    
+        // View Application Details
+        function viewApplication(applicationId) {
+            alert(`View application details for ID: ${applicationId}`);
+            // In a real implementation, this would open a modal with application details
+        }
+    
+        // Load Notifications
+        async function loadNotifications() {
+            try {
+                const data = await apiRequest('/user/notifications');
+                const notificationsContainer = document.getElementById('notifications-container');
+                notificationsContainer.innerHTML = '';
+                
+                // Update notification count
+                const unreadCount = data.notifications.filter(n => !n.read).length;
+                document.getElementById('notification-count').textContent = unreadCount;
+                
+                if (data.notifications.length === 0) {
+                    notificationsContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No notifications</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                data.notifications.forEach(notification => {
+                    const date = new Date(notification.createdAt).toLocaleDateString();
+                    
+                    const notificationElement = document.createElement('div');
+                    notificationElement.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                    notificationElement.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6>${notification.title}</h6>
+                            <small class="notification-time">${date}</small>
+                        </div>
+                        <p class="mb-1">${notification.message}</p>
+                        ${!notification.read ? `<button class="btn btn-sm btn-outline-primary mt-2" onclick="markAsRead('${notification._id}')">Mark as read</button>` : ''}
+                    `;
+                    notificationsContainer.appendChild(notificationElement);
+                });
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+    
+        // Mark Notification as Read
+        async function markAsRead(notificationId) {
+            try {
+                await apiRequest(`/notifications/${notificationId}/read`, {
+                    method: 'PATCH'
+                });
+                loadNotifications();
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+    
+        // Mark All Notifications as Read
+        document.getElementById('mark-all-read').addEventListener('click', async function() {
+            try {
+                await apiRequest('/notifications/read-all', {
+                    method: 'PATCH'
+                });
+                loadNotifications();
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+            }
+        });
+    
+        // Load Group Information
+        async function loadGroupInfo() {
+            try {
+                const data = await apiRequest('/user/group');
+                const groupContainer = document.getElementById('group-container');
+                
+                if (!data.group) {
+                    groupContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> You are not currently part of any group. Once you're approved for a project, you'll be assigned to a group.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let membersHTML = '';
+                data.group.members.forEach(member => {
+                    membersHTML += `
+                        <div class="member-badge">
+                            ${member.userId.name}
+                            <span class="role">${member.role}</span>
+                        </div>
+                    `;
+                });
+                
+                groupContainer.innerHTML = `
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div class="group-name">${data.group.name}</div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="group-members">
+                            ${membersHTML}
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h5>Project: ${data.group.projectId.title}</h5>
+                        <p>${data.group.projectId.description}</p>
+                    </div>
+                `;
+                
+                // Show submission form if user is in a group
+                document.getElementById('submission-form').style.display = 'block';
+                document.getElementById('submission-project').value = data.group.projectId.title;
+                document.getElementById('submission-group').value = data.group.name;
+            } catch (error) {
+                console.error('Error loading group info:', error);
+            }
+        }
+    
+        // Submit Project Work
+        document.getElementById('submit-project-btn').addEventListener('click', async function() {
+            const driveLink = document.getElementById('submission-link').value;
+            const notes = document.getElementById('submission-notes').value;
+            
+            if (!driveLink) {
+                alert('Please provide a Google Drive link');
+                return;
+            }
+            
+            try {
+                this.classList.add('btn-loading');
+                this.disabled = true;
+                
+                await apiRequest('/submissions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        driveLink,
+                        notes
+                    })
+                });
+                
+                alert('Project submitted successfully!');
+                document.getElementById('submission-link').value = '';
+                document.getElementById('submission-notes').value = '';
+                
+                // Reload stats to update submission count
+                loadDashboardStats();
+            } catch (error) {
+                console.error('Error submitting project:', error);
+                alert(error.message || 'An error occurred');
+            } finally {
+                this.classList.remove('btn-loading');
+                this.disabled = false;
+            }
+        });
+    
+        // Load Leaderboard
+        async function loadLeaderboard() {
+            try {
+                const data = await apiRequest('/leaderboard');
+                const leaderboardBody = document.getElementById('leaderboard-body');
+                leaderboardBody.innerHTML = '';
+                
+                if (data.leaderboard.length === 0) {
+                    leaderboardBody.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No leaderboard data available</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                data.leaderboard.forEach((entry, index) => {
+                    const leaderboardItem = document.createElement('div');
+                    leaderboardItem.className = 'leaderboard-item';
+                    leaderboardItem.innerHTML = `
+                        <div class="leaderboard-rank">${index + 1}</div>
+                        <div class="leaderboard-content">
+                            <div class="leaderboard-name">${entry.groupId.name}</div>
+                            <div class="leaderboard-project">${entry.projectId.title}</div>
+                        </div>
+                        <div class="leaderboard-grade">${entry.grade}%</div>
+                    `;
+                    leaderboardBody.appendChild(leaderboardItem);
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+    
+        // Navigation between sections
+        document.querySelectorAll('.nav-link[data-section]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = `${this.getAttribute('data-section')}-section`;
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Load section-specific data
+                switch(this.getAttribute('data-section')) {
+                    case 'projects':
+                        loadProjects();
+                        break;
+                    case 'applications':
+                        loadApplications();
+                        break;
+                    case 'notifications':
+                        loadNotifications();
+                        break;
+                    case 'group':
+                        loadGroupInfo();
+                        break;
+                    case 'submission':
+                        loadGroupInfo(); // Load group info to check if user can submit
+                        break;
+                    case 'leaderboard':
+                        loadLeaderboard();
+                        break;
+                }
+            });
+        });
+    
+        // Apply filters for projects
+        document.getElementById('apply-filters').addEventListener('click', loadProjects);
+    
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
+    
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+    
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadRecentActivity();
+        });
+
+
+
+
+    // View Application Details
+async function viewApplication(applicationId) {
+    try {
+        // Show the modal with a spinner while loading
+        const modal = new bootstrap.Modal(document.getElementById('applicationDetailsModal'));
+        modal.show();
+        
+        // Fetch application details
+        const data = await apiRequest(`/applications/${applicationId}`);
+        
+        // Format the application data for display
+        const application = data.application;
+        const appliedDate = new Date(application.appliedAt).toLocaleDateString();
+        
+        // Parse the message content (assuming it's formatted as key-value pairs)
+        const messageLines = application.message.split('\n');
+        const details = {};
+        
+        messageLines.forEach(line => {
+            const colonIndex = line.indexOf(':');
+            if (colonIndex > 0) {
+                const key = line.substring(0, colonIndex).trim();
+                const value = line.substring(colonIndex + 1).trim();
+                details[key] = value;
+            }
+        });
+        
+        // Create the HTML for the application details
+        let statusBadgeClass = '';
+        switch(application.status) {
+            case 'approved':
+                statusBadgeClass = 'bg-success';
+                break;
+            case 'rejected':
+                statusBadgeClass = 'bg-danger';
+                break;
+            case 'pending':
+                statusBadgeClass = 'bg-warning';
+                break;
+            default:
+                statusBadgeClass = 'bg-secondary';
+        }
+        
+        const applicationDetailsHTML = `
+            <div class="mb-4">
+                <h4>${application.projectId.title}</h4>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-muted">Applied on: ${appliedDate}</span>
+                    <span class="badge ${statusBadgeClass}">${application.status}</span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Skills</label>
+                        <p class="p-2 bg-light rounded">${details.Skills || 'Not specified'}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Qualifications</label>
+                        <p class="p-2 bg-light rounded">${details.Qualifications || 'Not specified'}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Project Ideas</label>
+                <p class="p-2 bg-light rounded">${details.Ideas || 'Not specified'}</p>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Previous Experience</label>
+                <p class="p-2 bg-light rounded">${details.Experience || 'Not specified'}</p>
+            </div>
+            
+            ${application.feedback ? `
+                <div class="mt-4 p-3 bg-info bg-opacity-10 rounded">
+                    <h6><i class="fas fa-comment me-2"></i>Instructor Feedback</h6>
+                    <p class="mb-0">${application.feedback}</p>
+                </div>
+            ` : ''}
+        `;
+        
+        // Update the modal content
+        document.getElementById('application-details-body').innerHTML = applicationDetailsHTML;
+        
+    } catch (error) {
+        console.error('Error loading application details:', error);
+        document.getElementById('application-details-body').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Failed to load application details. Please try again.
+            </div>
+        `;
+    }
+}
+    </script>

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectFlow - Login & Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --accent: #7209b7;
+        }
+        
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark);
+    overflow-x: hidden;
+    margin-left: 20%;
+    margin-top: 4%;
+    padding: 0;
+
+    /* Gradient background */
+    background: linear-gradient(-45deg, #1964ee, #d00c82, #b13921, #1bf32a);
+    background-size: 400% 400%;
+    animation: gradientShift 3s ease infinite;
+
+    /* Starry background effect */
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Animate gradient movement */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Stars layer */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: transparent;
+    background-image: radial-gradient(2px 2px at 20px 30px, white, transparent),
+                      radial-gradient(2px 2px at 100px 150px, white, transparent),
+                      radial-gradient(2px 2px at 200px 80px, white, transparent),
+                      radial-gradient(2px 2px at 300px 120px, white, transparent),
+                      radial-gradient(2px 2px at 400px 200px, white, transparent),
+                      radial-gradient(2px 2px at 600px 50px, white, transparent),
+                      radial-gradient(2px 2px at 800px 100px, white, transparent),
+                      radial-gradient(2px 2px at 1200px 250px, white, transparent);
+    animation: twinkle 5s infinite alternate;
+    z-index: 0;
+}
+
+/* Twinkling stars */
+@keyframes twinkle {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 900px;
+            min-height: 550px;
+            position: relative;
+        }
+        
+        .auth-left {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .auth-right {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .auth-welcome {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .auth-form {
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .auth-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .auth-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .social-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #4a5568;
+        }
+        
+        .social-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .social-btn.google {
+            color: #17c6cf;
+        }
+        
+        .social-btn.google:hover {
+            border-color: #30ce2a;
+            background: #fff0ee;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+        }
+        
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-switch a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+        
+        .forgot-password {
+            display: block;
+            text-align: right;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .forgot-password:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+        
+        .form-icon {
+            position: relative;
+        }
+        
+        .form-icon i {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #a0aec0;
+        }
+        
+        .form-icon input {
+            padding-left: 45px;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .auth-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.3s;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .auth-content {
+            display: none;
+        }
+        
+        .auth-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 14px;
+            cursor: pointer;
+            color: #a0aec0;
+        }
+        
+        @media (max-width: 992px) {
+            .auth-container {
+                width: 100%;
+                max-width: 500px;
+                margin: 20px;
+            }
+            
+            .auth-left {
+                display: none;
+            }
+        }
+        
+        .alert {
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="row g-0">
+            <div class="col-lg-5">
+                <div class="auth-left">
+                    <div class="text-center">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="ProjectFlow" class="img-fluid mb-4" style="border-radius: 15px; max-width: 250px;">
+                        <h2 class="auth-welcome">Welcome to ProjectFlow</h2>
+                        <p>Streamline your project enrollment and allocation process with our powerful platform.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="auth-right">
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" id="login-tab">Login</div>
+                        <div class="auth-tab" id="signup-tab">Sign Up</div>
+                    </div>
+                    
+                    <div class="alert alert-danger" id="error-alert"></div>
+                    <div class="alert alert-success" id="success-alert"></div>
+                    
+                    <!-- Login Form -->
+                    <div class="auth-content active" id="login-content">
+                        <form class="auth-form" id="login-form">
+                            <div class="form-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" class="form-control" id="login-email" placeholder="Email Address" required>
+                            </div>
+                            
+                            <div class="form-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="login-password" placeholder="Password" required>
+                                <span class="password-toggle" onclick="togglePassword('login-password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            <br><br>
+                            
+                            
+                            
+                            <button type="submit" class="auth-btn" id="login-btn">Login</button>
+                            
+                            
+                            
+                            <div class="auth-switch">
+                                Don't have an account? <a id="switch-to-signup">Sign Up</a>
+                            </div>
+                            <br>
+
+                              <div class="social-btn google">
+                                "Where applications meet opportunities
+                                From ideas to teams, from teams to success."
+                                
+                            </div>
+                              
+                        </form>
+                    </div>
+                    
+                    <!-- Signup Form -->
+                    <div class="auth-content" id="signup-content">
+                        <form class="auth-form" id="signup-form">
+                            <div class="form-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" class="form-control" id="signup-name" placeholder="Full Name" required>
+                            </div>
+                            
+                            <div class="form-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" class="form-control" id="signup-email" placeholder="Email Address" required>
+                            </div>
+                            
+                            <div class="form-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="signup-password" placeholder="Password" required>
+                                <span class="password-toggle" onclick="togglePassword('signup-password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            
+                            <div class="form-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" class="form-control" id="signup-confirm-password" placeholder="Confirm Password" required>
+                                <span class="password-toggle" onclick="togglePassword('signup-confirm-password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Role</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="role-student" value="student" checked>
+                                        <label class="form-check-label" for="role-student">Student</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="role-admin" value="admin">
+                                        <label class="form-check-label" for="role-admin">Admin</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="auth-btn" id="signup-btn">Create Account</button>
+                            
+                            <div class="social-btn google">
+                                <i class="fab fa-google me-2"></i> Sign up with Google
+                            </div>
+                            
+                            <div class="auth-switch">
+                                Already have an account? <a id="switch-to-login">Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your email address and we'll send you a link to reset your password.</p>
+                    <div class="form-icon mb-3">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-control" id="reset-email" placeholder="Email Address" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="reset-btn" onclick="resetPassword()">Send Reset Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL - change this to your server URL
+        // Instead of localhost, use your Vercel URL
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : 'https://projectdhaara.vercel.app';
+        
+        // Toggle between login and signup
+        document.getElementById('switch-to-signup').addEventListener('click', function() {
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('signup-tab').classList.add('active');
+            document.getElementById('login-content').classList.remove('active');
+            document.getElementById('signup-content').classList.add('active');
+        });
+        
+        document.getElementById('switch-to-login').addEventListener('click', function() {
+            document.getElementById('signup-tab').classList.remove('active');
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('signup-content').classList.remove('active');
+            document.getElementById('login-content').classList.add('active');
+        });
+        
+        document.getElementById('login-tab').addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('signup-tab').classList.remove('active');
+            document.getElementById('login-content').classList.add('active');
+            document.getElementById('signup-content').classList.remove('active');
+        });
+        
+        document.getElementById('signup-tab').addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('signup-content').classList.add('active');
+            document.getElementById('login-content').classList.remove('active');
+        });
+        
+        // Toggle password visibility
+        function togglePassword(inputId, toggleElement) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = toggleElement.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Form validation and submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const loginBtn = document.getElementById('login-btn');
+            
+            if (!validateEmail(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long.');
+                return;
+            }
+            
+            // Show loading state
+            loginBtn.classList.add('btn-loading');
+            loginBtn.disabled = true;
+            
+            try {
+                // Send login request to backend
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Login successful
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    // Store token in localStorage
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Redirect to dashboard after a short delay
+                    setTimeout(() => {
+                if (data.user.role === 'admin') {
+                    window.location.href = '/admin-dashboard';
+                } else {
+                    window.location.href = '/user-dashboard';
+                }
+            }, 1200);
+                } else {
+                    // Login failed
+                    showError(data.message || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Network error. Please try again later.');
+            } finally {
+                // Remove loading state
+                loginBtn.classList.remove('btn-loading');
+                loginBtn.disabled = false;
+            }
+        });
+        
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const signupBtn = document.getElementById('signup-btn');
+            
+            if (name.length < 3) {
+                showError('Name must be at least 3 characters long.');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match.');
+                return;
+            }
+            
+            // Show loading state
+            signupBtn.classList.add('btn-loading');
+            signupBtn.disabled = true;
+            
+            try {
+                // Send signup request to backend
+                const response = await fetch(`${API_BASE_URL}/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Signup successful
+                    showSuccess('Account created successfully! Redirecting to login...');
+                    
+                    // Switch to login form after a short delay
+                    setTimeout(() => {
+                        document.getElementById('switch-to-login').click();
+                    }, 1500);
+                } else {
+                    // Signup failed
+                    showError(data.message || 'Signup failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showError('Network error. Please try again later.');
+            } finally {
+                // Remove loading state
+                signupBtn.classList.remove('btn-loading');
+                signupBtn.disabled = false;
+            }
+        });
+        
+        // Forgot password functionality
+        async function resetPassword() {
+            const email = document.getElementById('reset-email').value;
+            const resetBtn = document.getElementById('reset-btn');
+            
+            if (!validateEmail(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show loading state
+            resetBtn.classList.add('btn-loading');
+            resetBtn.disabled = true;
+            
+            try {
+                // Send reset password request to backend
+                const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Reset request successful
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
+                    modal.hide();
+                    showSuccess('Password reset link has been sent to your email.');
+                } else {
+                    // Reset request failed
+                    showError(data.message || 'Failed to send reset link. Please try again.');
+                }
+            } catch (error) {
+                console.error('Reset password error:', error);
+                showError('Network error. Please try again later.');
+            } finally {
+                // Remove loading state
+                resetBtn.classList.remove('btn-loading');
+                resetBtn.disabled = false;
+            }
+        }
+        
+        // Helper functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showError(message) {
+            const errorAlert = document.getElementById('error-alert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            
+            // Hide success alert if shown
+            document.getElementById('success-alert').style.display = 'none';
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successAlert = document.getElementById('success-alert');
+            successAlert.textContent = message;
+            successAlert.style.display = 'block';
+            
+            // Hide error alert if shown
+            document.getElementById('error-alert').style.display = 'none';
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Google login/signup simulation
+        document.querySelectorAll('.social-btn.google').forEach(btn => {
+            btn.addEventListener('click', function() {
+                showSuccess('Redirecting to Google authentication...');
+            });
+        });
+    </script>
+    <!-- Google API Script -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script>
+        // Google OAuth Configuration
+        const googleClientId = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with your actual client ID
+        
+        // Initialize Google Sign-In
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: googleClientId,
+                callback: handleGoogleSignIn
+            });
+            
+            // Add click handler to Google button
+            document.getElementById('googleSignIn').addEventListener('click', () => {
+                google.accounts.id.prompt();
+            });
+        };
+
+        // Handle Google Sign-In response
+        function handleGoogleSignIn(response) {
+            // Send the credential to your backend
+            fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ credential: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Store token and user data
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Redirect based on user role
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                } else {
+                    alert('Google sign-in failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during sign-in');
+            });
+        }
+
+        // Regular login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during login');
+            });
+        });
+    </script>
+</body>
+</html>

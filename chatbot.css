@@ -1,0 +1,146 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    display: flex;
+    width: 90%;
+    height: 90vh;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+  
+  /* Chat Section */
+  .chat-section {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    background: #eef2f7;
+  }
+  
+  .chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .message {
+    max-width: 70%;
+    margin: 10px 0;
+    padding: 12px 16px;
+    border-radius: 18px;
+    animation: fadeInUp 0.3s ease;
+  }
+  
+  .user {
+    align-self: flex-end;
+    background: #0078ff;
+    color: white;
+  }
+  
+  .bot {
+    align-self: flex-start;
+    background: #e1e9f7;
+    color: black;
+  }
+  
+  .input-box {
+    display: flex;
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #ccc;
+  }
+  
+  .input-box input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+  }
+  
+  .input-box button {
+    margin-left: 10px;
+    padding: 0 15px;
+    border: none;
+    border-radius: 50%;
+    background: #0078ff;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .input-box button:hover {
+    background: #005ecb;
+  }
+  
+  /* History Section */
+  .history-section {
+    flex: 1;
+    background: #fff;
+    border-left: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+  }
+  
+  .history-section h2 {
+    margin: 0 0 10px;
+  }
+  
+  #session-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .session-item {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+    background: #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .session-item.active {
+    background: #0078ff;
+    color: white;
+  }
+  
+  .delete-btn {
+    margin-left: 10px;
+    color: red;
+    cursor: pointer;
+  }
+  
+  #new-session-btn {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background: #0078ff;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  #new-session-btn:hover {
+    background: #005ecb;
+  }
+  
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  

@@ -1,0 +1,920 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tathya Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #84fab0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: var(--dark-color);
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .container {
+            width: calc(100% - 350px);
+            margin-left: 20px;
+            margin-right: auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            box-shadow: none;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(79, 195, 247, 0.25);
+        }
+        
+        .btn-block {
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-2px);
+        }
+        
+        #response {
+            margin-top: 25px;
+            padding: 20px;
+            min-height: 50px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-color);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #response h3 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        #response strong {
+            color: var(--primary-color);
+        }
+        
+        #response ul {
+            padding-left: 25px;
+        }
+        
+        #response li {
+            margin-bottom: 8px;
+        }
+        
+        .active-mode {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+        
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn i {
+            margin-right: 6px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background-color: #3a5a8f;
+        }
+        
+        .download-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        
+        .stop-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .stop-btn:hover {
+            background-color: #c82333;
+        }
+        
+        #suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            width: calc(100% - 30px);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 5px;
+        }
+        
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .speak-btn {
+            background-color: #6f42c1;
+            color: white;
+        }
+        
+        .speak-btn:hover {
+            background-color: #5e35b1;
+        }
+        
+        #chatHistory {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 320px;
+            height: calc(100vh - 40px);
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        #chatHistory:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        #chatHistory h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        
+        .history-item {
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+        
+        .history-item:hover {
+            background-color: #f1f7ff;
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+        
+        .history-question {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--secondary-color);
+        }
+        
+        .history-answer {
+            font-size: 0.85em;
+            color: #666;
+            max-height: 50px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+        }
+        
+        .delete-icon {
+            float: right;
+            color: var(--danger-color);
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .delete-icon:hover {
+            color: #c82333;
+            transform: scale(1.2);
+        }
+        
+        .faculty-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .faculty-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .faculty-card p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .faculty-card strong {
+            color: var(--secondary-color);
+        }
+        
+        .welcome-quote {
+            text-align: center;
+            margin: 30px auto;
+            max-width: 800px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .welcome-quote h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-quote p {
+            color: #555;
+            font-style: italic;
+            margin-bottom: 0;
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin-right: 3px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .container {
+                width: calc(100% - 340px);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            #chatHistory {
+                position: static;
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+                margin-top: 30px;
+            }
+        }
+        
+        /* Floating animation for the chatbot title */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Pulse animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse:hover {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Mode selector styling */
+        .btn-group.mode-selector {
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-group.mode-selector .btn {
+            flex: 1;
+            border-radius: 0;
+            transition: all 0.3s;
+        }
+        
+        .btn-group.mode-selector .btn:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .btn-group.mode-selector .btn:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <!-- Welcome Quote Section -->
+    <div class="welcome-quote">
+        <h3><i class="fas fa-robot"></i> Welcome to Tathya Chatbot</h3>
+        <p id="dynamic-quote">"Knowledge is power. Ask me anything about our faculty or general topics."</p>
+    </div>
+    
+    <div class="container">
+        <h2 class="floating"><i class="fas fa-comments"></i> TATHYA CHATBOT</h2>
+        
+        <!-- Input Section -->
+        <div class="form-group" style="position: relative;">
+            <input type="text" class="form-control" id="userInput" placeholder="Enter your question..." list="suggestions" autocomplete="off">
+            <div id="suggestions" style="display: none;"></div>
+        </div>
+        
+        <!-- Mode Selector -->
+        <div class="btn-group mode-selector" id="modeSelector">
+            
+            
+        </div>
+        <br> <br>
+        <!-- Generate Button -->
+        <button class="btn btn-success btn-block pulse" onclick="generateAnswer()">
+            <i class="fas fa-paper-plane"></i> Generate Answer
+        </button>
+        
+        <!-- Response Area -->
+        <div id="response"></div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons" id="actionButtons" style="display: none;">
+            <button class="action-btn copy-btn" onclick="copyResponse()">
+                <i class="far fa-copy"></i> Copy Text
+            </button>
+            <button class="action-btn download-btn" onclick="downloadAsWord()">
+                <i class="fas fa-file-word"></i> Download as Word
+            </button>
+            <button class="action-btn speak-btn" onclick="speakResponse()">
+                <i class="fas fa-volume-up"></i> Speak Answer
+            </button>
+            <button class="action-btn stop-btn" onclick="stopSpeech()" style="display: none;">
+                <i class="fas fa-stop"></i> Stop Speaking
+            </button>
+        </div>
+    </div>
+    
+    <!-- Chat History Panel -->
+    <div id="chatHistory">
+        <h4><i class="fas fa-history"></i> Chat History</h4>
+        <b style="color:red">Note: The limit of chat history is only recent 40 questions per session.</b>
+        <div id="historyItems"></div>
+    </div>
+    
+    <script>
+        // Dynamic quotes that change periodically
+        const quotes = [
+            '"The only true wisdom is in knowing you know nothing." — Socrates',
+            '"Education is the most powerful weapon which you can use to change the world." — Nelson Mandela',
+            '"An investment in knowledge pays the best interest." — Benjamin Franklin',
+            '"Learning is a treasure that will follow its owner everywhere." — Chinese Proverb',
+            '"The beautiful thing about learning is that no one can take it away from you." — B.B. King',
+            '"Knowledge is power. Information is liberating." — Kofi Annan'
+        ];
+        
+        function rotateQuotes() {
+            const quoteElement = document.getElementById('dynamic-quote');
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % quotes.length;
+                quoteElement.style.opacity = 0;
+                
+                setTimeout(() => {
+                    quoteElement.textContent = quotes[currentIndex];
+                    quoteElement.style.opacity = 1;
+                }, 500);
+            }, 8000);
+        }
+        
+        // Start rotating quotes when page loads
+        document.addEventListener('DOMContentLoaded', rotateQuotes);
+        
+        let currentMode = 'deepseek';
+
+        // Initialize mode buttons
+        document.querySelectorAll('#modeSelector button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentMode = this.dataset.mode;
+                document.querySelectorAll('#modeSelector button').forEach(b => 
+                    b.classList.toggle('active-mode', b === this)
+                );
+            });
+        });
+        // Faculty dataset
+        const predefinedQuestions = {
+    "Tell about institution": "Our institution is a leading educational hub known for its excellence in teaching and research.",
+    "Who are you?": "I am an AI-powered chatbot designed to assist faculty members with their queries.",
+    "What are the facilities?": "We offer state-of-the-art facilities including modern classrooms, labs, and a well-stocked library.",
+    "How to contact admin?": "You can contact the administration through email at admin@institution.edu or call +91-1234567890."
+};
+
+function handleFacultyQuery(query) {
+    return predefinedQuestions[query] || "I'm sorry, I don't have an answer for that.";
+}
+
+const facultyData = [
+            {
+                "name": "John Doe",
+                "department": "Computer Science",
+                "email": "johndoe@university.edu",
+                "courses": ["Data Structures", "Algorithms", "Machine Learning"],
+                "research_interests": ["Artificial Intelligence", "Natural Language Processing"],
+                "description": "Professor of Computer Science specializing in AI and NLP"
+            },
+            {
+                "name": "Jane Smith",
+                "department": "Mathematics",
+                "email": "janesmith@university.edu",
+                "courses": ["Calculus", "Linear Algebra", "Statistics"],
+                "research_interests": ["Topology", "Graph Theory"],
+                "description": "Associate Professor of Mathematics with focus on discrete mathematics"
+            },
+            {
+                "name": "John Moore",
+                "department": "Computer Science",
+                "email": "johnmoore@university.edu",  // Changed email to be unique
+                "courses": ["Computer Networks", "Operating Systems", "Database Systems"],  // Different courses
+                "research_interests": ["Computer Security", "Distributed Systems"],  // Different research interests
+                "description": "Professor of Computer Science specializing in Systems and Security"  // Different description
+            }
+        ];
+
+        function filterFacultyData(query) {
+            if (currentMode !== 'faculty') return [];
+            const lowerQuery = query.toLowerCase();
+            
+            // Check for common question patterns
+            const patterns = [
+                { regex: /(tell|show|about|information).*(professor|dr\.?|faculty)\s+([a-z\s]+)/i, extract: 3 },
+                { regex: /(who|which).*(teach|teaches|teaching)\s+([a-z\s]+)/i, extract: 3 },
+                { regex: /(faculty|professors?).*(in|of|from)\s+([a-z\s]+)\s+department/i, extract: 3 },
+                { regex: /(research|studies|works).*(on|in|about)\s+([a-z\s]+)/i, extract: 3 }
+            ];
+
+            // Try to extract the main search term from question patterns
+            let searchTerm = lowerQuery;
+            for (const pattern of patterns) {
+                const match = query.match(pattern.regex);
+                if (match) {
+                    searchTerm = match[pattern.extract].toLowerCase().trim();
+                    break;
+                }
+            }
+
+            return facultyData.filter(faculty => 
+                faculty.name.toLowerCase().includes(searchTerm) ||
+                faculty.department.toLowerCase().includes(searchTerm) ||
+                faculty.description.toLowerCase().includes(searchTerm) ||
+                faculty.courses.some(course => course.toLowerCase().includes(searchTerm)) ||
+                faculty.research_interests.some(interest => interest.toLowerCase().includes(searchTerm)) ||
+                // Department-specific queries
+                (searchTerm.includes('department') && faculty.department.toLowerCase().includes(searchTerm.replace('department', '').trim())) ||
+                // Research-specific queries
+                (searchTerm.includes('research') && faculty.research_interests.some(interest => interest.toLowerCase().includes(searchTerm.replace('research', '').trim())))
+            );
+        }
+
+        function generateResponse(filteredData) {
+            return filteredData.map(faculty => `
+                <div class="faculty-card">
+                    <h3>${faculty.name}</h3>
+                    <p><strong>Department:</strong> ${faculty.department}</p>
+                    <p><strong>Email:</strong> ${faculty.email}</p>
+                    <p><strong>Courses:</strong> ${faculty.courses.join(', ')}</p>
+                    <p><strong>Research Interests:</strong> ${faculty.research_interests.join(', ')}</p>
+                    <p>${faculty.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Load chat history from localStorage on page load
+        let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+
+        function addToHistory(question, answer) {
+            // Generate a title from the first few words of the question
+            const title = question.length > 30 
+                ? question.substring(0, 30) + '...' 
+                : question;
+            
+            chatHistory.unshift({
+                title,
+                question,
+                answer,
+                timestamp: new Date().toLocaleString()
+            });
+            
+            // Keep only the last 20 items
+            if (chatHistory.length > 20) {
+                chatHistory.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+            
+            updateHistoryUI();
+        }
+
+        // Update the UI on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHistoryUI();
+        });
+
+        function updateHistoryUI() {
+            const historyContainer = document.getElementById('historyItems');
+            historyContainer.innerHTML = chatHistory.map((item, index) => `
+                <div class="history-item" onclick="loadHistoryItem(${index})">
+                    <span class="delete-icon" onclick="deleteHistoryItem(${index})">×</span>
+                    <div class="history-question">${item.title}</div>
+                    <div class="history-answer">${item.answer ? item.answer.replace(/<[^>]*>/g, '').substring(0, 100) : ''}...</div>
+                    <small>${item.timestamp}</small>
+                </div>
+            `).join('');
+        }
+
+        function loadHistoryItem(index) {
+            const item = chatHistory[index];
+            document.getElementById('userInput').value = item.question;
+            document.getElementById('response').innerHTML = item.answer;
+            showActionButtons();
+        }
+
+        // Modify generateAnswer to add to history
+        async function generateAnswer() {
+            const input = document.getElementById('userInput').value;
+            const responseDiv = document.getElementById('response');
+            
+            if (!input) {
+                responseDiv.innerHTML = 'Please enter a message.';
+                return;
+            }
+            
+            responseDiv.innerHTML = 'Loading....';
+            
+            try {
+                if (currentMode === 'faculty') {
+                    const filteredData = filterFacultyData(input);
+                    if (filteredData.length > 0) {
+                        const answer = generateResponse(filteredData);
+                        responseDiv.innerHTML = answer;
+                        addToHistory(input, answer);
+                        showActionButtons();
+                        return;
+                    }
+                    responseDiv.innerHTML = 'No matching faculty found.';
+                } else {
+                    // DeepSeek API call
+                    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer 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",
+                            "HTTP-Referer": "<YOUR_SITE_URL>",
+                            "X-Title": "<YOUR_SITE_NAME>",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "model": "deepseek/deepseek-r1:free",
+                            "messages": [
+                                {
+                                    "role": "user",
+                                    "content": input,
+                                }
+                            ]
+                        })
+                    });
+                    const data = await response.json();
+                    const markdownText = data.choices?.[0]?.message?.content || 'No response received.';
+                    const answer = marked.parse(markdownText);
+                    responseDiv.innerHTML = answer;
+                    addToHistory(input, answer);
+                    showActionButtons();
+                }
+            } catch(error) {
+                responseDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        function showActionButtons() {
+            document.getElementById('actionButtons').style.display = 'flex';
+        }
+
+        function downloadAsWord() {
+            const responseDiv = document.getElementById('response');
+            const htmlContent = responseDiv.innerHTML;
+            const blob = new Blob([`
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                      xmlns:w="urn:schemas-microsoft-com:office:word" 
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Chatbot Response</title>
+                </head>
+                <body>${htmlContent}</body>
+                </html>
+            `], { type: 'application/msword' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chatbot-response.doc';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+        function copyResponse() {
+            const responseDiv = document.getElementById('response');
+            const textToCopy = responseDiv.innerText || responseDiv.textContent;
+            const copyBtn = document.querySelector('.copy-btn');
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy Text';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    copyBtn.textContent = 'Copy Failed';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy Text';
+                    }, 2000);
+                });
+        }
+        let currentSpeech = null;
+
+        function speakResponse() {
+            const responseDiv = document.getElementById('response');
+            const textToSpeak = responseDiv.innerText || responseDiv.textContent;
+            const speakBtn = document.querySelector('.speak-btn');
+            const stopBtn = document.querySelector('.stop-btn');
+            
+            if ('speechSynthesis' in window) {
+                // Stop any ongoing speech
+                speechSynthesis.cancel();
+                
+                currentSpeech = new SpeechSynthesisUtterance();
+                currentSpeech.text = textToSpeak;
+                currentSpeech.rate = 1.0;
+                
+                // Show/hide buttons
+                speakBtn.style.display = 'none';
+                stopBtn.style.display = 'block';
+                
+                currentSpeech.onend = function() {
+                    speakBtn.style.display = 'block';
+                    stopBtn.style.display = 'none';
+                    currentSpeech = null;
+                };
+                
+                speechSynthesis.speak(currentSpeech);
+            } else {
+                alert('Text-to-speech is not supported in your browser');
+            }
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const speakBtn = document.querySelector('.speak-btn');
+                const stopBtn = document.querySelector('.stop-btn');
+                speakBtn.style.display = 'block';
+                stopBtn.style.display = 'none';
+                currentSpeech = null;
+            }
+        }
+        // Predefined suggestions
+        const predefinedSuggestions = [
+            "Tell me about Computer Science faculty",
+            "Who teaches Machine Learning?",
+            "Show me professors in Mathematics department",
+            "Research interests in Artificial Intelligence",
+            "Faculty working on Natural Language Processing",
+            "Courses offered by Computer Science department"
+        ];
+
+        // Automatic generation based on faculty data
+        function generateAutoSuggestions() {
+            const autoSuggestions = [];
+            facultyData.forEach(faculty => {
+                autoSuggestions.push(`Professor ${faculty.name} in ${faculty.department}`);
+                faculty.courses.forEach(course => {
+                    autoSuggestions.push(`Who teaches ${course}?`);
+                });
+                faculty.research_interests.forEach(interest => {
+                    autoSuggestions.push(`Research on ${interest}`);
+                });
+            });
+            return [...new Set(autoSuggestions)]; // Remove duplicates
+        }
+
+        const allSuggestions = [...predefinedSuggestions, ...generateAutoSuggestions()];
+
+        document.getElementById('userInput').addEventListener('input', function(e) {
+            const input = e.target.value.toLowerCase();
+            const suggestionsContainer = document.getElementById('suggestions');
+            
+            if (input.length > 1) {
+                const filtered = allSuggestions.filter(s => 
+                    s.toLowerCase().includes(input)
+                );
+                
+                if (filtered.length) {
+                    suggestionsContainer.innerHTML = filtered.map(s => 
+                        `<div class="suggestion-item">${s}</div>`
+                    ).join('');
+                    suggestionsContainer.style.display = 'block';
+                } else {
+                    suggestionsContainer.style.display = 'none';
+                }
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+        function deleteHistoryItem(index) {
+            chatHistory.splice(index, 1);
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+            updateHistoryUI();
+        }
+
+        document.getElementById('suggestions').addEventListener('click', function(e) {
+            if (e.target.classList.contains('suggestion-item')) {
+                document.getElementById('userInput').value = e.target.textContent;
+                this.style.display = 'none';
+                generateAnswer(); // Auto-submit when suggestion is clicked
+            }
+        });
+    </script>
+            
+        </body>
+</html>
